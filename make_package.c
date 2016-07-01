@@ -12,7 +12,7 @@
 #include <unistd.h>
 #include <string.h>
 
-#include "ev_mgr.h"
+#define KSN_BUFFER_SM_SIZE 256
 
 // Add configuration header
 #undef PACKAGE
