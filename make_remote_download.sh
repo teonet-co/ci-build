@@ -41,7 +41,7 @@ else
 fi
 
 mkdir $REPO
-mkdir $REPO/SUBFOLDER
+mkdir $REPO/$SUBFOLDER
 
 # Upload local repository to remote host
 echo $ANSI_BROWN"Download remote host to local repository:"$ANSI_NONE
