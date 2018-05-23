@@ -133,6 +133,7 @@ int main(int argc, char** argv) {
     // Get build ID from GitLab CI environment variable
     char version[KSN_BUFFER_SM_SIZE]; 
     char *CI_BUILD_ID = getenv("CI_BUILD_ID"); 
+    char *CIRCLE_BUILD_NUM = getenv("CIRCLE_BUILD_NUM");
 
     // Get version from Teonet configuration header file
     snprintf(version, KSN_BUFFER_SM_SIZE, "%s", VERSION); 
@@ -168,7 +169,7 @@ int main(int argc, char** argv) {
             version,                // $1 Version
             LIBRARY_MAJOR_VERSION,  // $2 Library major version
             LIBRARY_MAJOR_VERSION,  // $3 Library version
-            CI_BUILD_ID != NULL ? CI_BUILD_ID : "1", // $4 Build
+            CI_BUILD_ID != NULL ? CI_BUILD_ID : (CIRCLE_BUILD_NUM != NULL ? CIRCLE_BUILD_NUM : "1"), // $4 Build
             argc >= 3 ? argv[2] : b_type == DEB ? "amd64" : "x86_64", // $5 Architecture
             b_type > DEB ? argv[1] : "deb", // $6 RPM subtype
             PACKAGE_NAME, // $7 Package name (default: libteonet)
