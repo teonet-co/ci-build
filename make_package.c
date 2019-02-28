@@ -176,7 +176,7 @@ int main(int argc, char** argv) {
             strrepl(description, ' ', '_'),  // $8 Package description (default: ...)
             PACKAGE_BUGREPORT,  // $9 Package Maintainer
             strrepl(dependencies, ' ', '!')  // $10 Package dependencies
-    );     
+    ) < 0 ? abort() : (void)0;     
     
     free(description);
     free(dependencies);
