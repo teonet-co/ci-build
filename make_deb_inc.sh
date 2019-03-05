@@ -37,23 +37,27 @@
 # PACKET_DESCRIPTION=$8
 # MAINTAINER=$9
 # DEPENDS=$10
+# LICENSES=$11
+# VCS_URL=$12
 check_param()
 {
     PACKET_NAME_DEFAULT="teoroom"
     MAINTAINER_DEFAULT="kirill@scherba.ru"
-    DEPENDS_DEFAULT="libteonet-dev"
+    DEPENDS_DEFAULT=""
     PACKET_DESCRIPTION_DEFAULT="Teonet room controller"
+    LICENSES_DEFAULT='["MIT"]'
+    VCS_URL_DEFAULT="https://github.com"
 
     #  Replace characters in $8 and $10
     #echo "$@"
     #echo .
     # ${parameter//pattern/string}
-    descr="$8"
-    descr=`echo $descr| sed -e 's/_/ /g'`
+    # descr="$8"
+    # descr=`echo $descr| sed -e 's/_/ /g'`
     #echo "$descr"
     #echo .
-    depen="$10"
-    depen=`echo $depen| sed -e 's/!/ /g'`
+    # depen="$10"
+    # depen=`echo $depen| sed -e 's/!/ /g'`
     #echo "$depen"
 
     #exit 1
@@ -109,7 +113,7 @@ check_param()
     if [ -z "$8" ]; then
         PACKET_DESCRIPTION="$PACKET_DESCRIPTION_DEFAULT, Version $VER"
     else
-        PACKET_DESCRIPTION=$descr #$8
+        PACKET_DESCRIPTION=$8 #$descr #$8
     fi
 
     # $9
@@ -120,12 +124,25 @@ check_param()
     fi
 
     # $10
-    if [ -z "$10" ]; then        
+    if [ -z "${10}" ]; then        
         DEPENDS=$DEPENDS_DEFAULT
     else
-        DEPENDS=$depen #$10
+        DEPENDS=${10} #$depen #$10
     fi
 
+    # $11
+    if [ -z "${11}" ]; then        
+        LICENSES=$LICENSES_DEFAULT
+    else
+        LICENSES=${11}
+    fi
+
+    # $12
+    if [ -z "${12}" ]; then        
+        VCS_URL=$VCS_URL_DEFAULT
+    else
+        VCS_URL=${12}
+    fi
 }
 
 # Update and upgrade build host

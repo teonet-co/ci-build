@@ -20,4 +20,3 @@ docker push gitlab.ksproject.org:5000/ci/ubuntu_teonet
 docker build --no-cache -t centos_teonet -f ci-centos/Dockerfile .
 docker tag centos_teonet gitlab.ksproject.org:5000/ci/centos_teonet
 docker push centos_teonet gitlab.ksproject.org:5000/ci/centos_teonet
- 
