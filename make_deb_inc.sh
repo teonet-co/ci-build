@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #
 # File:   make_deb_inc.sh
 # Author: Kirill Scherba <kirill@scherba.ru>
@@ -148,10 +148,10 @@ check_param()
 # Update and upgrade build host
 update_host()
 {
-    #echo $ANSI_BROWN"Update and upgrade build host:"$ANSI_NONE
-    #echo ""
-    #sudo apt-get update
-    #sudo apt-get -y upgrade
+    echo $ANSI_BROWN"Update and upgrade build host:"$ANSI_NONE
+    echo ""
+    sudo apt-get update
+    sudo apt-get -y upgrade
     echo ""
 }
 
@@ -330,7 +330,7 @@ EOF
     fi
 }
 
-# Add DEB packages to local repository
+# Add DEB packages to Local repository
 # Parameters:
 # @param $1 Repository folder with sub-folder
 # @param $2 Repository code name
@@ -341,6 +341,38 @@ add_deb_package()
     echo ""
     reprepro --ask-passphrase -Vb $1 includedeb $2 $3.deb
     echo ""
+}
+
+# Upload DEB package to Bintray repository
+# Parameters:
+# @param $1 Distribution
+upload_deb_bintray()
+{
+
+    # Upload file
+    echo "Upload DEB package: " $PACKAGE_NAME.deb   
+    curl -X PUT -T $PACKAGE_NAME.deb -u$CI_BINTRAY_USER:$CI_BINTRAY_API_KEY "https://api.bintray.com/content/teonet-co/u/pool/main/"$PACKET_NAME"/"$PACKAGE_NAME"_"$1".deb;deb_distribution="$1";deb_component=main;deb_architecture="$VER_ARCH";override=1;publish=1;bt_package="$PACKET_NAME";bt_version="$VER
+    echo "\n"
+}
+
+# Create packet if not exists
+create_package_bintray()
+{
+    # JQ uses to check JSON
+    sudo apt-get install -y jq
+    echo ""
+    
+    # Create packet if not exists
+    if [ $(curl -X GET -u$CI_BINTRAY_USER:$CI_BINTRAY_API_KEY "https://api.bintray.com/packages/teonet-co/u/"$PACKET_NAME | jq -r ".name") != $PACKET_NAME ]; then
+        echo $ANSI_BROWN"Create package "$PACKET_NAME" in Bintray repository:"$ANSI_NONE
+        echo ""
+        # D='{"name":"'$PACKET_NAME'","licenses":'$LICENSES',"vcs_url":"'$VCS_URL'","desc":"'$PACKET_DESCRIPTION'"}'
+        # echo $D
+        curl -vvf -X POST -u$CI_BINTRAY_USER:$CI_BINTRAY_API_KEY -H "Content-Type:application/json" https://api.bintray.com/packages/teonet-co/u --data '{"name":"'$PACKET_NAME'","licenses":'$LICENSES',"vcs_url": "'$VCS_URL'"}'
+        # {"name":"libteoccl","repo":"u","owner":"teonet-co","desc":null,"labels":[],"attribute_names":[],"licenses":["LGPL-3.0","MIT"],"custom_licenses":[],"followers_count":0,"created":"2019-03-06T18:07:56.664Z","website_url":null,"issue_tracker_url":null,"github_repo":"","github_release_notes_file":"","public_download_numbers":false,"public_stats":true,"linked_to_repos":[],"versions":[],"latest_version":null,"updated":"2019-03-06T18:07:56.710Z","rating_count":0,"system_ids":[],"vcs_url":"https://github.com/teonet-co/teoccl.git","maturity":""}
+        echo ""
+    fi;
+    echo ""    
 }
 
 #-------------------------------------------------------------------------------

@@ -65,25 +65,6 @@ void show_usage(const char* appname) {
 }
 
 /**
- * Replace character in string
- *
- * @param str String to replace in
- * @param src Character to change
- * @param dst Character to change to
- * @return Pointer to input string
- */
-//static char* strrepl(char* str, char src, char dst) {
-//
-//  int i;
-//  for (i = 0; i < strlen(str); i++) {
-//    if (str[i] == src)
-//      str[i] = dst;
-//  }
-//
-//  return str;
-//}
-
-/**
  * Main application function
  *
  * @param argc
@@ -92,15 +73,16 @@ void show_usage(const char* appname) {
  */
 int main(int argc, char** argv) {
 
-  printf("Teonet build package ver. %s, %s\n", TBP_VERSION, "COPYRIGHT");
+  printf("Teonet build package ver. %s, %s\n", TBP_VERSION, COPYRIGHT);
 
   char cmd[KSN_BUFFER_SM_SIZE]; // Execute command name buffer
   int rv = EXIT_FAILURE;        // Return value
   int b_type = 0;               // Build type
 
+  char* CI_BUILD_REF = getenv("CI_BUILD_REF");
+
   // Show CI_BUILD_REF
   {
-    char* CI_BUILD_REF = getenv("CI_BUILD_REF");
     if (CI_BUILD_REF != NULL)
       printf("CI_BUILD_REF=%s\n", CI_BUILD_REF);
   }
@@ -129,10 +111,10 @@ int main(int argc, char** argv) {
 
   // DEB specific
   if (b_type == 1) {
-
     // Import repository keys
-    if (system("ci-build/make_deb_keys_add.sh"))
-      return (EXIT_FAILURE);
+    if (CI_BUILD_REF != NULL)
+      if (system("ci-build/make_deb_keys_add.sh"))
+        return (EXIT_FAILURE);
   }
 
   // Get build ID from GitLab CI environment variable
@@ -147,12 +129,13 @@ int main(int argc, char** argv) {
   #ifdef USE_CHECKINSTALL
   if (b_type == 1) {
     const char* MAINTAINER = PACKAGE_BUGREPORT;
-
+    printf("USE_CHECKINSTALL:\n");
     snprintf(cmd, KSN_BUFFER_SM_SIZE,
             "sudo checkinstall --maintainer=\"%s\" "
             "--pkgversion=\"%s\" --pkggroup=\"network\" --install=no "
             "--default",
             MAINTAINER, version);
+
     rv = system(cmd);
     // rv = system("ci-build/make_deb_keys_remove.sh");
     rv = system("sudo rm -fr docs doc-pak/");
@@ -160,13 +143,10 @@ int main(int argc, char** argv) {
   }
   #endif
 
-//  char* description = strdup(PACKAGE_DESCRIPTION);
-//  char* dependencies = strdup(PACKAGE_DEPENDENCIES);
-
   // Execute build packet script
   snprintf(
       cmd, KSN_BUFFER_SM_SIZE,
-      R"(ci-build/make_%s.sh %s %d %d.0.0 %s %s %s %s "%s" "%s" "%s" '%s' "%s")",
+      R"(ci-build/make_%s.sh %s %d %d.0.0 %s %s %s %s '%s' '%s' '%s' '%s' '%s')",
       b_type == DEB ? argv[1] : "rpm", // Script type
       // Script parameters
       version,               // $1 Version
@@ -180,10 +160,8 @@ int main(int argc, char** argv) {
                 : b_type == DEB ? "amd64" : "x86_64", // $5 Architecture
       b_type > DEB ? argv[1] : "deb",                 // $6 RPM subtype
       PACKAGE_NAME,                     // $7 Package name (default: libteonet)
-      //strrepl(description, ' ', '_'), // $8 Package description (default: ...)
       PACKAGE_DESCRIPTION,              // $8 Package description (default: ...)
       PACKAGE_BUGREPORT,                // $9 Package Maintainer
-      //strrepl(dependencies, ' ', '!') // $10 Package dependencies
       PACKAGE_DEPENDENCIES,             // $10 Package dependencies
       LICENSES,
       VCS_URL
@@ -191,9 +169,7 @@ int main(int argc, char** argv) {
       ? abort()
       : (void)0;
 
-//  free(description);
-//  free(dependencies);
-  puts(cmd);
+  printf("%s\n\n", cmd);
   rv = system(cmd);
 
   return rv != 0;

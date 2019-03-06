@@ -13,10 +13,13 @@ die () {
 
 # Empty line
 echo "\n" | cat - ChangeLog > temp && mv temp ChangeLog
+
 # List of changes
 git log --pretty=format:'  - %s' $1..HEAD | cat - ChangeLog > temp && mv temp ChangeLog
+
 # Empty line
 echo "" | cat - ChangeLog > temp && mv temp ChangeLog
+
 # Last tag
 git describe --tags | cat - ChangeLog > temp && mv temp ChangeLog
 echo "### " | cat - ChangeLog > temp && mv temp ChangeLog
