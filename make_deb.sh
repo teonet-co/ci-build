@@ -63,7 +63,7 @@ echo $ANSI_BROWN"Create debian packet $PACKET_NAME""_$VER_ARCH.deb"$ANSI_NONE
 echo ""
 
 # Update and upgrade build host
-update_host
+#update_host
 
 # Create deb repository -------------------------------------------------------
 if [ ! -z "$CI_BUILD_REF" ]; then
@@ -132,6 +132,7 @@ fi
 if [ ! -z "$CI_BUILD_REF_BT" ]; then
 
     echo $ANSI_BROWN"Upload DEB package to Bintray repository:"$ANSI_NONE
+    pwd
     echo ""
 
     # Create packet if not exists
@@ -153,3 +154,11 @@ if [ ! -z "$CI_BUILD_REF_BT" ]; then
     #curl -vvf -X PUT -u$CI_BINTRAY_USER:$CI_BINTRAY_API_KEY -H "Content-Type: application/json" -d '{"list_in_downloads":true}' "https://api.bintray.com/file_metadata/teonet-co/u/pool/main/"$PACKET_NAME"/"$PACKAGE_NAME"_bionic.deb"
     #echo ""
 fi
+
+echo $ANSI_BROWN"Build PPA DEB packages:"$ANSI_NONE
+pwd
+echo ""
+
+build_ppa
+
+# circleci local execute --job un-tagged-build-ubuntu -e CI_BUILD_REF_BT=1234567 -e CI_BINTRAY_USER=kirill-scherba -e CI_BINTRAY_API_KEY=fc6f1cae3022da43a10350552028763343bc7474

@@ -14,7 +14,9 @@ yum install -y autoconf intltool libtool glib2-devel doxygen make gcc gcc-c++ gi
 openssl-devel libev-devel libuuid-devel libcurl-devel \
 \
 libcurl-devel libev-devel libuuid-devel openssl-devel \
-bzip2 wget cmake unzip && \ 
+bzip2 wget cmake unzip \
+lftp jq \
+&& \ 
 \
 git clone https://github.com/cpputest/cpputest.git && \
 cd cpputest && \

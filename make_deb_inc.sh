@@ -350,7 +350,7 @@ upload_deb_bintray()
 {
 
     # Upload file
-    echo "Upload DEB package: " $PACKAGE_NAME.deb   
+    echo "Upload $1 DEB package: " $PACKAGE_NAME.deb   
     curl -X PUT -T $PACKAGE_NAME.deb -u$CI_BINTRAY_USER:$CI_BINTRAY_API_KEY "https://api.bintray.com/content/teonet-co/u/pool/main/"$PACKET_NAME"/"$PACKAGE_NAME"_"$1".deb;deb_distribution="$1";deb_component=main;deb_architecture="$VER_ARCH";override=1;publish=1;bt_package="$PACKET_NAME";bt_version="$VER
     echo "\n"
 }
@@ -373,6 +373,37 @@ create_package_bintray()
         echo ""
     fi;
     echo ""    
+}
+
+# Create packet if not exists
+build_ppa()
+{
+    # Create sources archive and unpack it to build folder
+    make dist
+    mkdir build
+    mv libteoccl-0.0.4.tar.gz build/
+    cd build
+    tar -xzf libteoccl-0.0.4.tar.gz
+    cd libteoccl-0.0.4
+    pwd
+    ls -all
+
+    # Test this sources packet
+    ./configure
+    make
+    sudo make install DESTDIR=$(pwd)/install
+    sudo make uninstall
+    ls -all
+    pwd
+
+    #sudo apt-get install -y dh-make bzr-builddeb
+    #cd ..
+
+    # DEBEMAIL="kirill@scherba.ru"
+    # DEBFULLNAME="Kirill Scherba"
+    # export DEBEMAIL DEBFULLNAME
+
+    # bzr dh-make libteoccl 0.0.4 libteoccl-0.0.4.tar.gz 
 }
 
 #-------------------------------------------------------------------------------
