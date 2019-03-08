@@ -42,14 +42,20 @@ $DOC_MAKE
 echo ""
 
 # Upload project documentation to remote host
-echo $ANSI_BROWN"Upload Packet documentation to remote host:"$ANSI_NONE
-echo ""
-lftp -c "
-set ftp:list-options -a;
-open ftp://repo:$CI_TEONET_REPO_FTP_PWD@repo.ksproject.org;
-lcd $DOC_FOLDER;
-mkdir $REPO_DOC_FOLDER;
-cd $REPO_DOC_FOLDER;
-mirror --reverse --delete --use-cache --verbose --allow-chown --only-newer --ignore-time
-"
-echo ""
+if [ ! -z "$CI_BUILD_REF" ]; then
+	echo $ANSI_BROWN"Upload Packet documentation to remote host:"$ANSI_NONE
+	echo ""
+	lftp -c "
+	set ftp:list-options -a;
+	open ftp://repo:$CI_TEONET_REPO_FTP_PWD@repo.ksproject.org;
+	lcd $DOC_FOLDER;
+	mkdir $REPO_DOC_FOLDER;
+	cd $REPO_DOC_FOLDER;
+	mirror --reverse --delete --use-cache --verbose --allow-chown --only-newer --ignore-time
+	"
+	echo ""
+fi
+
+# Upload project documentation to github pages
+if [ ! -z "$CI_BUILD_REF_BT" ]; then
+fi
