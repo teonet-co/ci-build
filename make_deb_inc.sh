@@ -355,6 +355,15 @@ upload_deb_bintray()
     echo "\n"
 }
 
+# Allow Bintray DEB package direct download
+# Parameters:
+# @param $1 Distribution
+allow_deb_binary_download()
+{
+    curl -vvf -X PUT -u$CI_BINTRAY_USER:$CI_BINTRAY_API_KEY -H "Content-Type: application/json" -d '{"list_in_downloads":true}' "https://api.bintray.com/file_metadata/teonet-co/u/pool/main/"$PACKET_NAME"/"$PACKAGE_NAME"_"$1".deb"
+    echo "\n"
+}
+
 # Create packet if not exists
 create_package_bintray()
 {
@@ -385,16 +394,16 @@ build_ppa()
     cd build
     tar -xzf libteoccl-0.0.4.tar.gz
     cd libteoccl-0.0.4
-    pwd
-    ls -all
+    #pwd
+    #ls -all
 
     # Test this sources packet
     ./configure
     make
     sudo make install DESTDIR=$(pwd)/install
     sudo make uninstall
-    ls -all
-    pwd
+    #ls -all
+    #pwd
 
     #sudo apt-get install -y dh-make bzr-builddeb
     #cd ..
@@ -404,6 +413,9 @@ build_ppa()
     # export DEBEMAIL DEBFULLNAME
 
     # bzr dh-make libteoccl 0.0.4 libteoccl-0.0.4.tar.gz 
+
+    cd ../..
+    echo ""
 }
 
 #-------------------------------------------------------------------------------
