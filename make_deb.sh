@@ -123,9 +123,6 @@ if [ ! -z "$CI_BUILD_REF" ]; then
     
     # Install packet from remote repository
     ci-build/make_remote_install.sh
-    
-    # Make and upload documentation
-    #ci-build/make_remote_doc_upload.sh $PACKET_NAME
 fi
 
 # Upload DEB packages to Bintray  ---------------------------------------------
@@ -143,30 +140,29 @@ if [ ! -z "$CI_BUILD_REF_BT" ]; then
 fi
 
 # Upload DEB packages to Launchpad PPA repository  ----------------------------
-echo $ANSI_BROWN"Build PPA DEB packages:"$ANSI_NONE
-echo ""
+if [ -z "$CI_SKIP_PPA" ]; then
+    echo $ANSI_BROWN"Build PPA DEB packages:"$ANSI_NONE
+    echo ""
 
-build_ppa
+    build_ppa
+fi
 
 # Make and upload documentation  ----------------------------------------------
-ci-build/make_remote_doc_upload.sh $PACKET_NAME 
+if [ -z "$CI_SKIP_DOCS" ]; then
+    ci-build/make_remote_doc_upload.sh $PACKET_NAME 
+fi
 
 # Add DEB packages to Bintray download list -----------------------------------
-if [ ! -z "$CI_BUILD_REF_BT" ]; then
+if [ ! -z "$CI_BUILD_REF_BT" ] && [ -z "$CI_SKIP_DOWNLOADS"  ]; then
 
-    # Add DEB packages to Bintray download list
     echo $ANSI_BROWN"Add DEB packages to Bintray download list:"$ANSI_NONE
     echo ""
     
-    # Add to direct download list
+    # Add "wheezy" to direct download list
     allow_deb_binary_download wheezy
-    # curl -vvf -X PUT -u$CI_BINTRAY_USER:$CI_BINTRAY_API_KEY -H "Content-Type: application/json" -d '{"list_in_downloads":true}' "https://api.bintray.com/file_metadata/teonet-co/u/pool/main/"$PACKET_NAME"/"$PACKAGE_NAME"_wheezy.deb"
-    # echo ""
     
-    # Add to direct download list
+    # Add "bionic" to direct download list
     allow_deb_binary_download bionic
-    # curl -vvf -X PUT -u$CI_BINTRAY_USER:$CI_BINTRAY_API_KEY -H "Content-Type: application/json" -d '{"list_in_downloads":true}' "https://api.bintray.com/file_metadata/teonet-co/u/pool/main/"$PACKET_NAME"/"$PACKAGE_NAME"_bionic.deb"
-    # echo ""
 fi
 
-# circleci local execute --job un-tagged-build-ubuntu -e CI_BUILD_REF_BT=1234567 -e CI_BINTRAY_USER=kirill-scherba -e CI_BINTRAY_API_KEY=fc6f1cae3022da43a10350552028763343bc7474   
+# circleci local execute --job un-tagged-build-ubuntu -e CI_BUILD_REF_BT=1234567 -e CI_BINTRAY_USER=kirill-scherba -e CI_BINTRAY_API_KEY=fc6f1cae3022da43a10350552028763343bc7474 -e CI_SKIP_DOCS=true -e CI_SKIP_DOWNLOADS=true --skip-checkout

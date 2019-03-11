@@ -90,6 +90,7 @@ if [ ! -z "$CI_BUILD_REF_BT" ]; then
     	git push origin gh-pages
     	rm -r ../.docs
     	
+    	# Resotre project state
     	# git checkout master
     	# git submodule update --init --recursive
     	# ./autogen.sh
