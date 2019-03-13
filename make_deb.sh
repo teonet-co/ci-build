@@ -72,8 +72,8 @@ if [ ! -z "$CI_BUILD_REF" ]; then
     echo ""
 
     # Install reprepro
-    sudo apt-get install -y reprepro
-    echo ""
+    # sudo apt-get install -y reprepro
+    # echo ""
 
     # Download repository from remote host by ftp:
     ci-build/make_remote_download.sh

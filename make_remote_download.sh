@@ -26,7 +26,7 @@ else
     RPM_SUBTYPE=$1
 fi
 if [ -z "$2" ];  then
-    sudo apt-get install -y lftp
+    #sudo apt-get install -y lftp
 else
     $2"lftp"
 fi

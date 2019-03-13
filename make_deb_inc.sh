@@ -368,8 +368,8 @@ allow_deb_binary_download()
 create_package_bintray()
 {
     # JQ uses to check JSON
-    sudo apt-get install -y jq
-    echo ""
+    #sudo apt-get install -y jq
+    #echo ""
     
     # Create packet if not exists
     if [ $(curl -X GET -u$CI_BINTRAY_USER:$CI_BINTRAY_API_KEY "https://api.bintray.com/packages/teonet-co/u/"$PACKET_NAME | jq -r ".name") != $PACKET_NAME ]; then
