@@ -351,7 +351,7 @@ upload_deb_bintray()
 
     # Upload file
     echo "Upload $1 DEB package: " $PACKAGE_NAME.deb   
-    curl -X PUT -T $PACKAGE_NAME.deb -u$CI_BINTRAY_USER:$CI_BINTRAY_API_KEY "https://api.bintray.com/content/teonet-co/u/pool/main/"$PACKET_NAME"/"$PACKAGE_NAME"_"$1".deb;deb_distribution="$1";deb_component=main;deb_architecture="$VER_ARCH";override=1;publish=1;bt_package="$PACKET_NAME";bt_version="$VER
+    curl -X PUT -T $PACKAGE_NAME.deb -u$CI_BINTRAY_USER:$CI_BINTRAY_API_KEY "https://api.bintray.com/content/teonet-co/u/"$PACKET_NAME"/"$VER"/"$PACKAGE_NAME"_"$1".deb;deb_distribution="$1";deb_component=main;deb_architecture="$ARCH";override=1;publish=1;bt_package="$PACKET_NAME";bt_version="$VER
     echo "\n"
 }
 
@@ -360,7 +360,7 @@ upload_deb_bintray()
 # @param $1 Distribution
 allow_deb_binary_download()
 {
-    curl -vvf -X PUT -u$CI_BINTRAY_USER:$CI_BINTRAY_API_KEY -H "Content-Type: application/json" -d '{"list_in_downloads":true}' "https://api.bintray.com/file_metadata/teonet-co/u/pool/main/"$PACKET_NAME"/"$PACKAGE_NAME"_"$1".deb"
+    curl -vvf -X PUT -u$CI_BINTRAY_USER:$CI_BINTRAY_API_KEY -H "Content-Type: application/json" -d '{"list_in_downloads":true}' "https://api.bintray.com/file_metadata/teonet-co/u/"$PACKET_NAME"/"$VER"/"$PACKAGE_NAME"_"$1".deb"
     echo "\n"
 }
 
