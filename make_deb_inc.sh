@@ -387,13 +387,13 @@ create_package_bintray()
 # Create packet if not exists
 build_ppa()
 {
-    # Create sources archive and unpack it to build folder
+    # Create sources archive and unpack it to _build folder
     make dist
-    mkdir build
-    mv libteoccl-0.0.4.tar.gz build/
-    cd build
-    tar -xzf libteoccl-0.0.4.tar.gz
-    cd libteoccl-0.0.4
+    mkdir _build
+    mv libteoccl-$VER_ONLY.tar.gz _build/
+    cd _build
+    tar -xzf libteoccl-$VER_ONLY.tar.gz
+    cd libteoccl-$VER_ONLY
     #pwd
     #ls -all
 
@@ -416,6 +416,7 @@ build_ppa()
 
     cd ../..
     echo ""
+    sudo rm -rf _build
 }
 
 #-------------------------------------------------------------------------------

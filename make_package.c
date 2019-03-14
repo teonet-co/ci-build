@@ -67,9 +67,10 @@ void show_usage(const char* appname) {
 /**
  * Main application function
  *
- * @param argc
- * @param argv
- * @return
+ * @param[in]  argc  The argc
+ * @param[in]  argv  The argv
+ *
+ * @return     Exit application code; 0 - if success
  */
 int main(int argc, char** argv) {
 
